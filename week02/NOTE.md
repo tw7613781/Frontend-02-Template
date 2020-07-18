@@ -56,13 +56,12 @@ JS处于大体上为**2型**，但是有个别语法会跟上下文相关，但�
     <AddtiveExpression>"-"<MultiplicativeExpression>
       
 <ParenthesisExpression>::=<AddtiveExpression>|
-    "("<ParenthesisExpression>")""+""("<AddtiveExpression>"|
-    "("<ParenthesisExpression>")""-""("<AddtiveExpression>"|
-    "("<ParenthesisExpression>")""*""("<AddtiveExpression>"|
-    "("<ParenthesisExpression>")""/""("<AddtiveExpression>"
+    "("<ParenthesisExpresson>")"|
+    <ParenthesisExpression>"+"<ParenthesisExpression>|
+    <ParenthesisExpression>"-"<ParenthesisExpression>|
+    <ParenthesisExpression>"*"<ParenthesisExpression>|
+    <ParenthesisExpression>"/"<ParenthesisExpression>
 ```
-
-- 注：因为还没有批改，不确定对错，作业批改之后再修正。
 
 ## 形式语言的分类
 
