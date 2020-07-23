@@ -57,3 +57,85 @@ function state3(c) {
   }
 }
 ```
+
+# HTTP 协议
+
+winter老师通过编写一个简单的浏览器来带大家理解HTTP协议
+
+## HTTP简介
+
+- HTTP是属于文本型协议，
+
+> 文本型协议对应的是二进制型协议。文本型协议一般是由一串字符组成的数据（当然这个字符串在底层传输的过程中还是要用utf-8编码成字节流,bytes array）,然后通过字符串中间的/r/n等控制符来分割字符串，使得每一部分达到传递有效信息的目的。HTTP协议是常见的文本型协议
+
+> 更多的基础协议是属于二进制型协议。二进制型协议也是用字节流传输的，但是它对于字节流规定的更加严格，通常包括消息头(header)和消息体(body)，消息头的长度固定，并且消息头包括了消息体的长度。这样就能够从数据流中解析出一个完整的二进制数据。
+
+> 可以参考[文本协议与二进制协议](https://blog.csdn.net/u013474436/article/details/70217591)一文
+
+- HTTP协议是一个request和response一一对应的，由浏览器端发送request，由服务器端处理后发回response
+
+- HTTP协议主要是由`\r\n`来区分各个部分的
+
+> `\r`在ascii中是13，carriage return (CR), 含义是把光标移动到行首
+
+> `\n`在sscii中是10，line feed (LF)，含义是换到下一行。在一般的文本编辑器中，回车换行就是这个字符，至少在vscode测试过了。
+
+> `\r\n`组合在一起用的由来是从打字机的时代过来的，打字机换行需要有两个动作，打字到了一行的句尾了，需要首先把光标移回行首，再换到下一行。
+
+### Request格式
+
+第一行request line, 由method path http-version
+
+然后再是request headers
+
+最后是一行空白，接body，body的格式跟Content-Type相关。
+```
+POST / HTTP/1.1
+Host: 127.0.0.1
+Content-Type: application/x-www-form-urlencoded
+
+field1=aaa&code=x%D1
+```
+
+在vscode中，上面字符串的表示为
+
+```
+`POST \ HTTP/1.1\r
+Host: 127.0.0.1\r
+Content-Type: application/x-www-form-urlencoded\r
+\r
+field1=aaa&code=x%D1`
+```
+
+如果不让vscode中的回车来断行的话，那么表示为
+
+``POST \ HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\nfield1=aaa&code=x%D1``
+
+### Response格式
+
+第一行是status line
+
+接下来是headers
+
+然后接一个空行，接body。body的格式是根据header中Transfer-Encoding的值走的。这里以chunked类型为例。chunked的是一个hex的数占一个单行，接着这个hex表示的长度的字符串，以此反复，最后以0为结尾。
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html
+Date: Mon, 23 Dec 2019 06:46:19 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+
+26
+<html><body> Hello World<body></html>
+0
+
+
+```
+
+0后面有一个空行，再接一个空行。
+
+### 用fsm来解析response
+
+已知了resonse的chunked型数据的格式，也直到了这些数据是根据`\r\n`来分离了。可以使用fsm来解析response数据。具体参见toyBrowser->client.js
+
