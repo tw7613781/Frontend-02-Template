@@ -1,12 +1,25 @@
+let currentToken = null
+let currentAttribute = null
+
+function emit (token) {
+  console.log(token)
+}
+
 const EOF = Symbol('EOF')
 
 function data (c) {
   if (c === '<') {
     return tagOpen
   } else if (c === EOF) {
-
+    emit({
+      type: 'EOF'
+    })
   } else {
-    // 一些没实现的状态，吃掉这些字符
+    // 文本节点，一个一个的输出
+    emit({
+      type: 'text',
+      content: c
+    })
     return data
   }
 }
@@ -15,6 +28,10 @@ function tagOpen (c) {
   if (c === '/') {
     return endTagOpen
   } else if (c.match(/^[a-zA-Z]$/)) {
+    currentToken = {
+      type: 'startTag',
+      tagName: ''
+    }
     // reconsuming
     return tagName(c)
   } else {
@@ -24,6 +41,10 @@ function tagOpen (c) {
 
 function endTagOpen (c) {
   if (c.match(/^[a-zA-Z]$/)) {
+    currentToken = {
+      type: 'endTag',
+      tagName: ''
+    }
     return tagName(c)
   } else if (c === '>') {
     // error handler
@@ -41,8 +62,12 @@ function tagName (c) {
   } else if (c === '/') {
     return selfClosingStartTag
   } else if (c.match(/^[a-zA-Z]$/)) {
+    // 核心逻辑，追加tagName
+    currentToken.tagName += c
     return tagName
   } else if (c === '>') {
+    // 核心逻辑，找到tag，输出
+    emit(currentToken)
     return data
   } else {
     return tagName
@@ -52,18 +77,143 @@ function tagName (c) {
 function beforeAttributeName (c) {
   if (c.match(/^[\t\n\f ]$/)) {
     return beforeAttributeName
-  } else if (c === '>') {
-    return data
+  } else if (c === '/' || c === '>' || c === EOF) {
+    return afterAttributeName(c)
   } else if (c === '=') {
-    return beforeAttributeName
+    // error handles
   } else {
+    currentAttribute = {
+      name: '',
+      value: ''
+    }
+    return attributeName(c)
+  }
+}
+
+function attributeName (c) {
+  if (c.match(/^[\t\n\f ]$/) || c === '/' || c === '>' || c === EOF) {
+    return afterAttributeName(c)
+  } else if (c === '=') {
+    return beforeAttributeValue
+  } else if (c === '\u0000') {
+    // error handle
+  } else if (c === '"' || c === '\'' || c === '<') {
+    // error handle
+  } else {
+    currentAttribute.name += c
+    return attributeName
+  }
+}
+
+function beforeAttributeValue (c) {
+  if (c.match(/^[\t\n\f ]$/) || c === '/' || c === '>' || c === EOF) {
     return beforeAttributeName
+  } else if (c === '"') {
+    return doubleQuotedAttributeValue
+  } else if (c === '\'') {
+    return singleQuotedAttributeValue
+  } else if (c === '>') {
+
+  } else {
+    return UnquotedAttributeValue(c)
+  }
+}
+
+function doubleQuotedAttributeValue (c) {
+  if (c === '"') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    return afterQuotedAttributeValue
+  } else if (c === '\u0000') {
+
+  } else if (c === EOF) {
+
+  } else {
+    currentAttribute.value += c
+    return doubleQuotedAttributeValue
+  }
+}
+
+function singleQuotedAttributeValue (c) {
+  if (c === '\'') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    return afterQuotedAttributeValue
+  } else if (c === '\u0000') {
+
+  } else if (c === EOF) {
+
+  } else {
+    currentAttribute.value += c
+    return singleQuotedAttributeValue
+  }
+}
+
+function UnquotedAttributeValue (c) {
+  if (c.match(/^[\t\n\f ]$/)) {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    return beforeAttributeName
+  } else if (c === '/') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    return selfClosingStartTag
+  } else if (c === '>') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    emit(currentToken)
+    return data
+  } else if (c === '\u0000') {
+
+  } else if (c === '"' || c === '\'' || c === '<' || c === '-' || c === '`') {
+
+  } else if (c === EOF) {
+
+  } else {
+    currentAttribute.value += c
+    return UnquotedAttributeValue
+  }
+}
+
+function afterQuotedAttributeValue (c) {
+  if (c.match(/^[\t\n\f ]$/)) {
+    return beforeAttributeName
+  } else if (c === '/') {
+    return selfClosingStartTag
+  } else if (c === '>') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    emit(currentToken)
+    return data
+  } else if (c === EOF) {
+
+  } else {
+    currentAttribute.value += c
+    return afterQuotedAttributeValue
+  }
+}
+
+function afterAttributeName (c) {
+  if (c.match(/^[\t\n\f ]$/)) {
+    return afterAttributeName
+  } else if (c === '/') {
+    return selfClosingStartTag
+  } else if (c === '=') {
+    return beforeAttributeValue
+  } else if (c === '>') {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    emit(currentToken)
+    return data
+  } else if (c === EOF) {
+
+  } else {
+    currentToken[currentAttribute.name] = currentAttribute.value
+    currentAttribute = {
+      name: '',
+      value: ''
+    }
+    return attributeName(c)
   }
 }
 
 function selfClosingStartTag (c) {
   if (c === '>') {
-    // currentToken.isSelfClosing = true
+    currentToken.isSelfClosing = true
+    emit(currentToken)
     return data
   } else if (c === 'EOF') {
 
