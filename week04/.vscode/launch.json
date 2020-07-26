@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "node",
-      "program": "${file}"
+      "program": "${workspaceFolder}/toyBrowser/client.js"
     }
   ]
 }

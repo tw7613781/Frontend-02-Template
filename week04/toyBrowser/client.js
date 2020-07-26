@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable no-void */
 const net = require('net')
+const parser = require('./parser')
 
 class Request {
   constructor (options) {
@@ -214,6 +215,8 @@ void (async function () {
   })
 
   const response = await request.send()
+
+  const dom = parser.parseHTML(response.body)
 
   console.log(response)
 }()).catch((err) => {

@@ -58,7 +58,7 @@ function state3(c) {
 }
 ```
 
-# HTTP 协议
+# HTTP （第一步，通过HTTP请求，获得HTML）
 
 winter老师通过编写一个简单的浏览器来带大家理解HTTP协议
 
@@ -137,5 +137,17 @@ Transfer-Encoding: chunked
 
 ### 用fsm来解析response
 
-已知了resonse的chunked型数据的格式，也直到了这些数据是根据`\r\n`来分离了。可以使用fsm来解析response数据。具体参见toyBrowser->client.js
+已知了resonse的chunked型数据的格式，也知道了这些数据是根据`\r\n`来分离了。可以使用fsm来解析response数据。具体参见toyBrowser->client.js
+
+# HTML的解析 (第二步，通过对HTML的解析获得dom树)
+
+上面通过对http的response的解析，获得了html文件。下面我们还是来运用fsm来解析HTML文件。
+
+在toyBrowser中，我们先完整获得html之后再给htl parser来解析。但是在商用的浏览器中，为了效率，应该做成异步分段获取html，然后对每一段进行解析的。
+
+## HTML的tokenization
+
+在html的标准中，有tokenization这一章，已经定义好了html的所有状态，直接就可以用作fsm。我们toy浏览器选取一些主要的状态来做解析。
+
+> 所谓的状态就是在用fsm来解析字符串的一些特定字符来获得一些特定的内容。比如上面讲的http response的解析，通过`\r\n`等这种特殊字符，我们能得到我们需要的内容。
 
