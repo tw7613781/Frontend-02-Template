@@ -218,7 +218,7 @@ void (async function () {
 
   const dom = parser.parseHTML(response.body)
 
-  console.log(response)
+  console.log(dom)
 }()).catch((err) => {
   console.error(err)
 })

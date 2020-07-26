@@ -1,7 +1,6 @@
 const http = require('http')
 
-const file = `
-<html lang="en">
+const file = `<html lang="en">
 <head>
   <title>Document</title>
 </head>
