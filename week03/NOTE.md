@@ -393,6 +393,19 @@ js代码的执行顺序一直是js代码面试的最爱，我们通过宏任务�
   
 - 表达式部分：函数体
 
+闭包例子
+
+f3,f4都是闭包，因为它依赖于外部环境，变量a。
+
+```
+let f2 = a => {
+  let f3 = x => a + x
+  let f4 = x => a*2 + x
+  return [f3,f4]
+}
+
+```
+
 ### 执行上下文 (execution context)
 
 - lexical environment：词法环境，当获取变量或者 this 值时使用。
