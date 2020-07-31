@@ -6,8 +6,57 @@ let currentTextNode = null
 
 const stack = [{ type: 'document', children: [] }]
 
+function specificity (selector) {
+  const p = [0, 0, 0, 0]
+  const selectorParts = selector.split(' ')
+  for (const part of selectorParts) {
+    if (part.charAt(0) === '#') {
+      p[1] += 1
+    } else if (part.charAt(0) === '.') {
+      p[2] += 1
+    } else {
+      p[3] += 1
+    }
+  }
+  return p
+}
+
+function compare (sp1, sp2) {
+  if (sp1[0] - sp2[0]) {
+    return sp1[0] - sp2[0]
+  }
+  if (sp1[1] - sp2[1]) {
+    return sp1[1] - sp2[1]
+  }
+  if (sp1[2] - sp2[2]) {
+    return sp1[2] - sp2[2]
+  }
+  return sp1[3] - sp2[3]
+}
+
 // 加入一个新的函数，addCSSRules，这里我们把css规则暂存到一个数组里
 const rules = []
+function match (element, selector) {
+  if (!selector || !element.attributes) {
+    return false
+  }
+  if (selector.charAt(0) === '#') {
+    const attr = element.attributes.filter(attr => attr.name === 'id')[0]
+    if (attr && attr.value === selector.replace('#', '')) {
+      return true
+    }
+  } else if (selector.charAt(0) === '.') {
+    const attr = element.attributes.filter(attr => attr.name === 'class')[0]
+    if (attr && attr.value === selector.replace('.', '')) {
+      return true
+    }
+  } else {
+    if (element.tagName === selector) {
+      return true
+    }
+  }
+  return false
+}
 function addCSSRules (text) {
   const ast = css.parse(text)
   rules.push(...ast.stylesheet.rules)
@@ -15,6 +64,41 @@ function addCSSRules (text) {
 
 function computeCSS (element) {
   const elements = stack.slice().reverse()
+  if (!element.computedStyle) {
+    element.computedStyle = {}
+  }
+  for (const rule of rules) {
+    const selectorParts = rule.selectors[0].split(' ').reverse()
+    // 匹配当前元素，如果不成功就匹配下一个rule
+    if (!match(element, selectorParts[0])) continue
+    // 如果当前元素成功，就开始匹配父元素
+    let matched = false
+    let j = 1
+    for (let i = 0; i < elements.length; i++) {
+      if (match(elements[i], selectorParts[j])) {
+        j++
+      }
+    }
+    if (j >= selectorParts.length) {
+      matched = true
+    }
+    if (matched) {
+      const sp = specificity(rule.selectors[0])
+      const computedStyle = element.computedStyle
+      for (const declaration of rule.declarations) {
+        if (!computedStyle[declaration.property]) {
+          computedStyle[declaration.property] = {}
+        }
+        if (!computedStyle[declaration.property].specificity) {
+          computedStyle[declaration.property].value = declaration.value
+          computedStyle[declaration.property].specificity = sp
+        } else if (compare(computedStyle[declaration.property].specificity, sp) < 0) {
+          computedStyle[declaration.property].value = declaration.value
+          computedStyle[declaration.property].specificity = sp
+        }
+      }
+    }
+  }
 }
 
 function emit (token) {
@@ -39,7 +123,7 @@ function emit (token) {
     computeCSS(element)
 
     top.children.push(element)
-    element.parent = top
+    // element.parent = top
     if (!token.isSelfClosing) {
       stack.push(element)
     }

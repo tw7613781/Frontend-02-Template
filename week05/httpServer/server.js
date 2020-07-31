@@ -15,9 +15,9 @@ const file = `<html lang="en">
   </style>
 </head>
 <body>
-  <div id="myid">
-    <p>Hello World</p>
-    <img id="myid" />
+  <div>
+    <p id='myid'>Hello World</p>
+    <img />
   </div>
 </body>
 </html>
