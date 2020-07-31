@@ -1,8 +1,19 @@
+const css = require('css')
+
 let currentToken = null
 let currentAttribute = null
 let currentTextNode = null
 
 const stack = [{ type: 'document', children: [] }]
+
+// 加入一个新的函数，addCSSRules，这里我们把css规则暂存到一个数组里
+const rules = []
+function addCSSRules (text) {
+  const ast = css.parse(text)
+  console.log(JSON.stringify(ast, null, '   '))
+  rules.push(...ast.stylesheet.rules)
+}
+
 function emit (token) {
   const top = stack[stack.length - 1]
 
@@ -31,6 +42,9 @@ function emit (token) {
     if (top.tagName !== token.tagName) {
       throw new Error('Tag start end doesn\'t match!')
     } else {
+      if (top.tagName === 'style') {
+        addCSSRules(top.children[0].content)
+      }
       stack.pop()
     }
     currentTextNode = null

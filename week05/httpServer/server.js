@@ -3,9 +3,19 @@ const http = require('http')
 const file = `<html lang="en">
 <head>
   <title>Document</title>
+  <style>
+    body div #myid{
+      width: 100px;
+      background-color: #ff5000;
+    }
+    body div img{
+      width: 30px;
+      background-color: #ff1111;      
+    }
+  </style>
 </head>
 <body>
-  <div id="text">
+  <div id="myid">
     <p>Hello World</p>
     <img id="myid" />
   </div>

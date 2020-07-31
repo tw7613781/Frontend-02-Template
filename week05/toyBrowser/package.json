@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "client.js",
-  "dependencies": {},
+  "dependencies": {
+    "css": "^3.0.0"
+  },
   "devDependencies": {
     "eslint": "^7.5.0",
     "eslint-config-standard": "^14.1.1",
