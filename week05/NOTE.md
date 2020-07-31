@@ -28,3 +28,37 @@ rules.push(...ast.stylesheet.rules)
 
 // 如果没有使用...操作符的话，就直接把一个array push进去进去当一个element了。
 ```
+
+## 添加调用
+
+这里强调的是计算css的时机，在body中遇到startTag的时候就开始计算css的。
+
+因为是玩具浏览器，它做了很多假设，忽略了很多场景。比如style就默认都写在head中了。
+
+## 获取父元素序列
+
+在computeCSS函数中，我们必须知道元素的所有父元素才能判断元素与规则是否匹配。这是由选择器的特性决定的。
+
+我们可以从stack中获取到当前元素的所有父元素
+
+> 小语法，array的直接赋值和deep copy
+
+我们知道js中的对象直接赋值的话都是引用赋值，就是当前对象的值改变了，引用赋值也会变化，因为它们指向同样的对象地址。可以用slice()函数来重新返回一个一样的数组来解决这个问题。
+
+这里由个小问题，就是在mozilla的js文档中，slice()返回的被称为shallow copy,它的效果跟我们理解中的这种deep copy是一样的，但是为什么叫做shallow copy，这里值得溯源考古一下。
+
+> The slice() method returns a **shallow copy** of a portion of an array into a new array object selected from start to end (end not included) where start and end represent the index of items in that array. The original array will not be modified.
+
+```
+let a = [1,2,3,4]
+
+b = a
+
+c = a.slice()
+
+a.push(5)
+
+// a = [1,2,3,4,5]
+// b = [1,2,3,4,5]
+// c = [1,2,3,4]
+```

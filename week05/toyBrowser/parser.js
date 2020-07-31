@@ -10,8 +10,11 @@ const stack = [{ type: 'document', children: [] }]
 const rules = []
 function addCSSRules (text) {
   const ast = css.parse(text)
-  console.log(JSON.stringify(ast, null, '   '))
   rules.push(...ast.stylesheet.rules)
+}
+
+function computeCSS (element) {
+  const elements = stack.slice().reverse()
 }
 
 function emit (token) {
@@ -32,6 +35,9 @@ function emit (token) {
         })
       }
     }
+
+    computeCSS(element)
+
     top.children.push(element)
     element.parent = top
     if (!token.isSelfClosing) {
