@@ -1,4 +1,5 @@
 const css = require('css')
+const layout = require('./layout')
 
 let currentToken = null
 let currentAttribute = null
@@ -123,6 +124,7 @@ function emit (token) {
     computeCSS(element)
 
     top.children.push(element)
+    // 不然JSON.stringify的时候会出现circular structure
     // element.parent = top
     if (!token.isSelfClosing) {
       stack.push(element)
@@ -135,6 +137,7 @@ function emit (token) {
       if (top.tagName === 'style') {
         addCSSRules(top.children[0].content)
       }
+      layout(top)
       stack.pop()
     }
     currentTextNode = null
