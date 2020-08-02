@@ -327,7 +327,7 @@ function layout (element) {
 
       const align = itemStyle.alignSelf || style.alignItems
 
-      if (itemStyle[crossSize] === null) {
+      if (itemStyle[crossSize] === null || itemStyle[crossSize] === (void 0)) {
         itemStyle[crossSize] = (align === 'stretch')
           ? lineCrossSize : 0
       }
@@ -351,7 +351,7 @@ function layout (element) {
         itemStyle[crossStart] = crossBase
         itemStyle[crossEnd] = crossBase + crossSign * ((itemStyle[crossSize] !== null && itemStyle[crossSize] !== (void 0)))
 
-        itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart])
+        // itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart])
       }
     }
     crossBase += crossSign * (lineCrossSize + step)

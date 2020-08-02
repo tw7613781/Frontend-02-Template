@@ -2,6 +2,8 @@
 /* eslint-disable no-void */
 const net = require('net')
 const parser = require('./parser')
+const images = require('images')
+const render = require('./render')
 
 class Request {
   constructor (options) {
@@ -218,6 +220,11 @@ void (async function () {
 
   const dom = parser.parseHTML(response.body)
 
+  const viewport = images(800, 600)
+
+  render(viewport, dom)
+
+  viewport.save('viewport.jpg')
   console.log(JSON.stringify(dom, null, '  '))
   console.log('')
 }()).catch((err) => {

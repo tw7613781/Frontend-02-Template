@@ -171,3 +171,26 @@ css排版技术大致分为四代技术
 
 根据行高flex-align和item-align，去定元素具体位置
 
+# 渲染(render)
+
+## 渲染dom树中单个元素
+
+- 绘制需要依赖一个图形环境：这里用了npm包images
+
+- 绘制在一个viewport上进行
+
+- 与绘制相关的属性：background-color, border, background-image等
+
+## 渲染整个dom树
+
+- 递归调用子元素的绘制方法完成dom树的绘制
+
+- 做了大量的忽略
+
+# 总结
+
+最后虽然输出了与winter视频中一样的结果，但是我在一些代码中做了省略，特别是计算layout部分中的crossSize，也就是height的值。
+
+理解了浏览器的主要工作步骤和大致原理，对于有限状态机有了初步的认识。
+
+之后还需要对细节进一步的深究
