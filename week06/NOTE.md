@@ -192,4 +192,4 @@ A selector's specificity is calculated as follows:
 
   - 为什么 first-letter 可以设置 float 之类的，而 first-line 不行呢？
 
-  参考了网上一位同学的答案。说的主要是性能考虑。first-line的确定是根据计算布局之后的实际宽度选中的文字，如果加了float属性之后，每次都要再次布局，性能消耗比较大。而first-letter是确定的，可以直接参与到布局计算中，不会触发再次布局，性能消耗小。
+  参考了网上一位同学的答案。说的主要是性能考虑。first-line的确定是根据计算布局之后的实际宽度选中的文字，如果加了float属性之后，每次都要再次计算布局，性能消耗比较大。而first-letter是确定的，可以直接参与到布局计算中，不会触发再次计算布局，性能消耗小。
