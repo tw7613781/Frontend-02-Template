@@ -6,15 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    div #id.class[text=3] {
-      font-size: 20px;
+    div #id.class[attr=test] {
+      font-size: 30px;
+      color: red;
     }
   </style>
 </head>
 
 <body>
   <div>
-    <div class="class" id="id" text=3>123</div>
+    <div class="class" id="id" attr="test">123</div>
   </div>
 </body>
 <script>
@@ -68,6 +69,6 @@ function matchCompond(selector, element) {
    }
    return true
 }
-console.log(match("div #id.class[text=3]", document.getElementById("id")));
+console.log(match("div #id.class[attr=test]", document.getElementById("id")));
 </script>
 </html>
