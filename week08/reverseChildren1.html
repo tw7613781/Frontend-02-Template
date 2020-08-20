@@ -1,0 +1,32 @@
+<!-- 使用range的好处是对dom树的操作只有两次，一个是extractContents的时候，
+获得一个fragment，然后对fragment里面的children node重新排序后，第二次
+对dom树的操作就是再使用appendChild的方法，把fragment里面的node又重新挂上去。
+
+而之前的使用node api的操作是每一个node都要appendChild一次来操作dom树。
+所以操作dom树的次数是chilren数-1.对性能影响较大。 
+
+这里操作dom树会导致页面重排
+-->
+
+
+<div id='a'>
+  <span>1</span>
+  <p>2</p>
+  <a href="">3</a>
+  <div>4</div>
+</div>
+<script>
+let element = document.getElementById('a')
+function reverseChildren(element) {
+  let range = new Range()
+  range.selectNodeContents(element)
+
+  let fragment = range.extractContents()
+  var l = fragment.childNodes.length
+  while(l-- > 0) {
+    fragment.appendChild(fragment.childNodes[l])
+  }
+  element.appendChild(fragment)
+}
+reverseChildren(element)
+</script>

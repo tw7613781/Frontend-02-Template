@@ -1,0 +1,23 @@
+<!-- 两个点
+1：childNodes是个live collection，会随着操作更新的一个集合
+2：appendChild的话，如果child在element上的话，是会自己移除child的，然后增加到children的最后面
+所以它就从后到前遍历child node，把它移动到队尾 -->
+<div id='a'>  
+  <span>1</span>
+  <p>2</p>
+  <a href="">3</a>
+  <div>4</div>
+</div>
+<script>
+  let element = document.getElementById('a')
+  function reverseChildren(element) {
+    var l = element.childNodes.length
+    while(l-- > 0) {
+      element.appendChild(element.childNodes[l])
+    }
+  }
+  reverseChildren(element)
+</script>
+
+<!-- Node.appendChild() 方法将一个节点附加到指定父节点的子节点列表的末尾处。如果将被插入的节点已经存在于当前文档的文档树中，那么 appendChild() 只会将它从原先的位置移动到新的位置（不需要事先移除要移动的节点）。 -->
+<!-- <div id=Node.childNodes 返回包含指定节点的子节点的集合，该集合为即时更新的集合（live collection）。'a'> -->
