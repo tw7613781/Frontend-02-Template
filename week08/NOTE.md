@@ -154,7 +154,7 @@ DOM API分下面4类
 
 - traversal api：基本废了
 
-## 8.7 浏览器API｜CSSOM API
+## 8.7 浏览器API->CSSOM API
 
 对CSS的抽象也就是CSSOM了。好处是可以批量修改css规则，然后伪元素的风格必须使用cssom来操作
 
@@ -182,7 +182,7 @@ css普通规则对象: CSSStyleRule
 
 它能获取到某个元素或者伪元素最终计算出来的样式。
 
-## 8.7 浏览器API｜CSSOM View API
+## 8.8 浏览器API->CSSOM View API
 
 cssom view部分的api是对浏览器layout后，render后形成的一些属性的操作
 
@@ -214,19 +214,19 @@ cssom view部分的api是对浏览器layout后，render后形成的一些属性�
 
   - getBoundingClientRect()
 
-  ## 8.7 浏览器API｜其他API
+## 8.9 浏览器API->其他API
 
-  API的来源，也就是标准是谁定的
+API的来源，也就是标准是谁定的
 
-  - khronos -> WebGL
+- khronos -> WebGL
 
-  - ECMA -> ECMAScript
+- ECMA -> ECMAScript
 
-  - WHATWG -> HTML
+- WHATWG -> HTML
 
-  - W3C -> webaudio, CG/WG
+- W3C -> webaudio, CG/WG
 
-  通过对window对象使用`Object.getOwnPropertyName(window)`方法获取到所有的api，然后进行分类。
+通过对window对象使用`Object.getOwnPropertyName(window)`方法获取到所有的api，然后进行分类。
 
 
 
