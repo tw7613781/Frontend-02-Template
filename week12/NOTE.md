@@ -78,7 +78,16 @@ Children的两种类型，一种是所见即所得的content型children，一种
 
 从零开始建立一个组件系统。首先要有markup和js都能访问的环境，所以第一步要建立一个能够使用markup的环境。一种是类react的jsx环境，一种是类似vue的标记语言的parser的环境。
 
+### 1.3.1 运行环境
+
 因为jsx的解析工作是babel的插件完成的，而babel一般作为loader的形式放在webpack中使用，所以我们依次要安装的包有webpack, webpack-cli, babel-loader, @babel/core, @babel/preset-env, @babel/plugin-transform-react-jsx
 
 webpack的基本功能能够把import或者require的各种js文件打包为一个js文件。babel能够把各种新版本的js转为兼容性更好的js。
 
+### 1.3.2 
+
+jsx经过babel创建的转换，会变为createElement函数。所以它本质上是个语法糖。
+
+树形嵌套的jsx标签递归的调用createElement这个函数。
+
+讲解了如何自定义createElement这个函数来处理标准html标签和自定义标签。
